@@ -27,6 +27,7 @@
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/swagger": "^6.1.4",
     "@nestjs/typeorm": "^9.0.1",
+    "class-validator": "^0.14.0",
     "mysql2": "^2.3.3",
     "pg": "^8.8.0",
     "reflect-metadata": "^0.1.13",
@@ -64,7 +65,9 @@
       "ts"
     ],
     "rootDir": "./src",
-    "modulePaths":["<rootDir>"],
+    "modulePaths": [
+      "<rootDir>"
+    ],
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
