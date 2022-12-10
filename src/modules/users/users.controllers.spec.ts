@@ -144,4 +144,33 @@ describe('UsersController', () => {
         .expect({});
     });
   });
+  describe('isUserNameAvailable', () => {
+    it('should return true for a non used user name', async () => {
+      return await request(app.getHttpServer())
+        .get('/api/v1/users/username/falconiere2')
+        .expect(200)
+        .expect((res) =>
+          expect(res.body).toEqual({
+            isAvailable: true,
+            message: 'The username "falconiere2" is available',
+          }),
+        );
+    });
+
+    it('should return false for a used user name', async () => {
+      await request(app.getHttpServer())
+        .post('/api/v1/users')
+        .send(newUser)
+        .expect(201);
+      return await request(app.getHttpServer())
+        .get(`/api/v1/users/username/${newUser.username}`)
+        .expect(200)
+        .expect((res) =>
+          expect(res.body).toEqual({
+            isAvailable: false,
+            message: `The username "${newUser.username}" is not available`,
+          }),
+        );
+    });
+  });
 });

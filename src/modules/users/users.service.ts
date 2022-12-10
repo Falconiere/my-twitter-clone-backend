@@ -30,4 +30,15 @@ export class UsersService {
     await this.usersRepository.update(id, user);
     return await this.usersRepository.findOneBy({ id });
   }
+
+  async isUserNameAvailable(username: string) {
+    const isAvailable =
+      (await this.usersRepository.countBy({ username })) === 0;
+    return {
+      message: `The username "${username}" ${
+        isAvailable ? 'is' : 'is not'
+      } available`,
+      isAvailable,
+    };
+  }
 }

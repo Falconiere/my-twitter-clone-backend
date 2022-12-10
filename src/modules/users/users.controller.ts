@@ -37,8 +37,18 @@ export class UsersController {
   async remove(@Body() userId: User['id']): Promise<void> {
     await this.usersService.removeById(userId);
   }
+
   @Put(':id')
   async update(@Param('id') id: User['id'], @Body() user: User): Promise<User> {
     return await this.usersService.update(id, user);
+  }
+
+  @ApiResponse({
+    status: 200,
+    description: 'The username is available.',
+  })
+  @Get('username/:username')
+  async isUserNameAvailable(@Param('username') username: string) {
+    return await this.usersService.isUserNameAvailable(username);
   }
 }
