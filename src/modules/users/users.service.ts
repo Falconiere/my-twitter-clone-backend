@@ -7,7 +7,7 @@ import { User } from './users.entity';
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private readonly usersRepository: Repository<User>,
   ) {}
 
   async create(user: User): Promise<User> {
@@ -16,6 +16,10 @@ export class UsersService {
 
   async findAll(): Promise<User[]> {
     return await this.usersRepository.find();
+  }
+
+  async findById(id: User['id']): Promise<User> {
+    return await this.usersRepository.findOneBy({ id });
   }
 
   async removeById(id: User['id']): Promise<void> {

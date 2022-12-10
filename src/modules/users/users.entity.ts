@@ -2,10 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Entity, Column, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 @Entity('users')
-@Unique('user_constraint', ['userName'])
+@Unique('user_constraint', ['username'])
 export class User {
   @PrimaryGeneratedColumn('increment')
-  id: number;
+  id?: number;
 
   @ApiProperty()
   @Column()
@@ -17,7 +17,7 @@ export class User {
 
   @ApiProperty()
   @Column({ unique: true })
-  userName: string;
+  username: string;
 
   @ApiProperty()
   @Column()
@@ -25,11 +25,11 @@ export class User {
 
   @ApiProperty()
   @Column({ default: true })
-  isActive: boolean;
+  isActive?: boolean;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  createAt: Date;
+  createAt?: Date;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-  updateAt: Date;
+  updateAt?: Date;
 }
