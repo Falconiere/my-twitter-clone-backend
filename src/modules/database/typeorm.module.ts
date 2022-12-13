@@ -1,6 +1,6 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule as Module } from '@nestjs/typeorm';
-import { User } from 'modules/users/users.entity';
+import { UserEntity } from 'modules/users/users.entity';
 
 interface DatabaseConfig {
   POSTGRES_USER: string;
@@ -22,7 +22,7 @@ export const TypeOrmModule = Module.forRootAsync({
       username: constants.POSTGRES_USER,
       password: constants.POSTGRES_PASSWORD,
       database: constants.POSTGRES_DB,
-      entities: [User],
+      entities: [UserEntity],
       synchronize: true,
       dropSchema: true,
     };

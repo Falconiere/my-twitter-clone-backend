@@ -6,14 +6,15 @@ import { AppModule } from 'app.module';
 
 import { TypeOrmModule } from 'modules/database/typeorm.module';
 
-import { User } from './users.entity';
+import { UserEntity as User } from './users.entity';
 import { UsersModule } from './users.module';
 
-const newUser: User = {
+const newUser = {
   firstName: 'falconiere',
   lastName: 'barbosa',
   phone: '7126372167',
   username: 'falconiere',
+  email: 'hello@falconiere.io',
 };
 
 export class EmptyLogger implements LoggerService {
@@ -33,7 +34,7 @@ describe('UsersController', () => {
     }).compile();
 
     app = moduleRef.createNestApplication();
-    app.useLogger(new EmptyLogger());
+    // app.useLogger(new EmptyLogger());
     app.setGlobalPrefix('api/v1');
     await app.listen(3001);
     await app.init();
@@ -67,6 +68,36 @@ describe('UsersController', () => {
         .send(newUser)
         .expect(500);
     });
+    it('Should return error for a undefined email field', async () => {
+      await request(app.getHttpServer())
+        .post('/api/v1/users')
+        .send({ ...newUser, email: undefined })
+        .expect(500)
+        .expect((res) =>
+          expect(res.body.errors).toEqual([
+            {
+              property: 'email',
+              messages: ['Invalid email'],
+            },
+          ]),
+        );
+    });
+
+    it('Should return error for a empty string email field', async () => {
+      await request(app.getHttpServer())
+        .post('/api/v1/users')
+        .send({ ...newUser, email: '' })
+        .expect(500)
+        .expect((res) =>
+          expect(res.body.errors).toEqual([
+            {
+              property: 'email',
+              value: '',
+              messages: ['Invalid email'],
+            },
+          ]),
+        );
+    });
   });
 
   describe('findAll', () => {
@@ -74,11 +105,18 @@ describe('UsersController', () => {
       await request(app.getHttpServer())
         .post('/api/v1/users')
         .send(newUser)
-        .expect(201);
+        .expect(201)
+        .expect((res) => {
+          expect(res.body.firstName).toEqual(newUser.firstName);
+        });
 
       await request(app.getHttpServer())
         .post('/api/v1/users')
-        .send({ ...newUser, username: 'falconiere2' })
+        .send({
+          ...newUser,
+          username: 'falconiere2',
+          email: 'falconier@falconiere.io',
+        })
         .expect(201);
 
       const response = await request(app.getHttpServer())

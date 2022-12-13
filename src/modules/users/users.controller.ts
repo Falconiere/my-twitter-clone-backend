@@ -3,12 +3,16 @@ import {
   Controller,
   Delete,
   Get,
+  HttpStatus,
   Param,
   Post,
   Put,
+  Res,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { User } from './users.entity';
+import { Response } from 'express';
+
+import { UserEntity as User } from './users.entity';
 import { UsersService } from './users.service';
 @ApiTags('users')
 @Controller('users')
@@ -20,8 +24,15 @@ export class UsersController {
     description: 'The record has been successfully created.',
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  async create(@Body() user: User): Promise<User> {
-    return await this.usersService.create(user);
+  async create(@Body() user: User, @Res() res: Response) {
+    try {
+      const createdUser = await this.usersService.create(user);
+      res.status(HttpStatus.CREATED).json(createdUser);
+    } catch (errors) {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
+        errors,
+      });
+    }
   }
 
   @Get()

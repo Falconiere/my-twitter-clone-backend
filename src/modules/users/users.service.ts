@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { validate } from 'class-validator';
+
 import { Repository } from 'typeorm';
-import { User } from './users.entity';
+import { convertObjToEntity } from 'utilities/entities';
+import { validateEntity } from 'utilities/validators';
+import { UserEntity as User } from './users.entity';
 
 @Injectable()
 export class UsersService {
@@ -11,6 +15,8 @@ export class UsersService {
   ) {}
 
   async create(user: User): Promise<User> {
+    const _user = convertObjToEntity<User>('UserEntity', user);
+    await validateEntity(_user);
     return await this.usersRepository.save(user);
   }
 
